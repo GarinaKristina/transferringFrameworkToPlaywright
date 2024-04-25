@@ -1,5 +1,5 @@
 import defineConfig from "../../../playwright.config";
-import { setSeedDatabase, filterDatabase } from "../../helpers/config";
+import { setSeedDatabase, filterDatabase } from "../../helpers/api";
 import { test, expect } from "@playwright/test";
 
 const baseUrl = defineConfig.use.baseURL;

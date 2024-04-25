@@ -7,7 +7,7 @@ dotenv.config({ path: ".env.local" });
 dotenv.config();
 
 export async function setSeedDatabase() {
-  const testDataApiEndpoint = `http://localhost:3001/testData`;
+  const testDataApiEndpoint = `http://localhost:3000/testData`;
   try {
     const { data } = await axios.post(`${testDataApiEndpoint}/seed`);
     console.log(data);
@@ -26,6 +26,79 @@ export async function filterDatabase(queryPayload) {
 export async function findDatabase(queryPayload) {
   const { table, attrs } = queryPayload;
   return seedDatabase(table).where(attrs).first();
+}
+
+export async function loginByApi(username, password) {
+  const response = await axios.post(`http://localhost:3000/login`, {
+    username,
+    password,
+  });
+
+  return response;
+}
+
+export async function database(operation, entity, query, logTask = false) {
+  const params = {
+    entity,
+    query,
+  };
+
+  console.log(`🔎 ${operation}ing within ${entity} data`);
+
+  try {
+    const response = await axios.post(`http://localhost:3000/${operation}/database`, params);
+
+    console.log(response.data);
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function loginByGoogleApi() {
+  console.log("Logging in to Google");
+
+  try {
+    const refreshTokenResponse = await axios.post("https://www.googleapis.com/oauth2/v4/token", {
+      grant_type: "refresh_token",
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    });
+
+    const { access_token, id_token } = refreshTokenResponse.data;
+
+    const userInfoResponse = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    console.log(userInfoResponse.data);
+
+    const { sub, email, given_name, family_name, picture } = userInfoResponse.data;
+
+    const userItem = {
+      token: id_token,
+      user: {
+        googleId: sub,
+        email,
+        givenName: given_name,
+        familyName: family_name,
+        imageUrl: picture,
+      },
+    };
+
+    const userData = JSON.stringify(userItem);
+    process.env.GOOGLE_CYPRESS = userData;
+
+    await page.goto("/");
+
+    return userData;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 // let awsConfig = {
