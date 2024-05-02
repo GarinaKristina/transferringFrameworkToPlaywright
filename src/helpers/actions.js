@@ -1,79 +1,46 @@
-export async function visualSnapshot(page, testName, maybeName) {
-  let snapshotTitle = testName;
-  if (maybeName) {
-    snapshotTitle = snapshotTitle + " - " + maybeName;
-  }
+import defineConfig from "./../../playwright.config.js";
 
-  await page.screenshot({
-    path: `.src/visualSnapshots/${snapshotTitle}.png`,
-    fullPage: true,
-  });
+const { webkit } = require("playwright");
+
+const url = defineConfig.use.baseURL;
+let currentPage;
+
+export async function newPage() {
+  const browser = await webkit.launch();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  return page;
 }
 
-export async function getBySel(page, selector, ...args) {
-  return page.locator(`[data-test=${selector}]`, ...args);
+async function newPageIfNeeded() {
+  if (!currentPage) {
+    const browser = await webkit.launch();
+    const context = await browser.newContext();
+    currentPage = await context.newPage();
+  }
+  return currentPage;
 }
 
-export async function getBySelLike(page, selector, ...args) {
-  return page.locator(`[data-test*=${selector}]`, ...args);
+export async function openHomePage() {
+  const page = await newPageIfNeeded();
+  await page.goto(url);
 }
 
-export async function login(page, username, password, { rememberUser = false } = {}) {
-  const signinPath = "/signin";
-
-  console.log(`🔐 Authenticating | ${username}`);
-
-  await Promise.all([page.route("**/login", (route) => route.continue()), page.route("**/checkAuth", (route) => route.continue())]);
-
-  const currentPath = await page.evaluate(() => window.location.pathname);
-  if (currentPath !== signinPath) {
-    await page.goto(signinPath);
-  }
-
-  const beforeSnapshot = await page.screenshot();
-
-  await (await getBySel("signin-username")).fill(username);
-  await (await getBySel("signin-password")).fill(password);
-
-  if (rememberUser) {
-    await page.check('[data-test="signin-remember-me"] input');
-  }
-
-  await Promise.all([page.waitForNavigation(), page.click('[data-test="signin-submit"]')]);
-
-  const [loginUser, userProfile] = await Promise.all([
-    page.waitForResponse((response) => response.url().includes("/login")),
-    page.waitForResponse((response) => response.url().includes("/checkAuth")),
-  ]);
-
-  const userId = loginUser.ok() ? await loginUser.json().then((data) => data.user.id) : null;
-
-  const afterSnapshot = await page.screenshot();
-
-  console.log({
-    username,
-    password,
-    rememberUser,
-    userId,
-  });
-
-  return { beforeSnapshot, afterSnapshot };
+export async function getElement(selector) {
+  const page = await newPageIfNeeded();
+  await page.pause(1000);
+  console.log("--------------", page.locator(selector));
+  return page.locator(selector);
 }
 
-export async function reactComponent($el) {
-  const componentHandle = await $el.evaluateHandle((el) => {
-    return window.ReactDOM ? window.ReactDOM.findDOMNode(el) : null;
-  });
+// export async function getBySel(page, selector, ...args) {
+//   return page.locator(`[data-test=${selector}]`, ...args);
+// }
 
-  if (!componentHandle) {
-    throw new Error("Component not found");
-  }
+// export async function getBySelLike(page, selector, ...args) {
+//   return page.locator(`[data-test*=${selector}]`, ...args);
+// }
 
-  const component = await componentHandle.jsonValue();
-
-  console.log({
-    component,
-  });
-
-  return component;
+export async function typeInput(element, value) {
+  return await element.fill(value);
 }
