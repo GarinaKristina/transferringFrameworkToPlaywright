@@ -28,11 +28,9 @@ export async function openHomePage() {
 
 export async function getElement(selector) {
   const page = await newPageIfNeeded();
-  await page.pause(1000);
-  console.log("--------------", page.locator(selector));
-  return page.locator(selector);
+  const locator = page.locator(selector);
+  return locator;
 }
-
 // export async function getBySel(page, selector, ...args) {
 //   return page.locator(`[data-test=${selector}]`, ...args);
 // }
@@ -43,4 +41,9 @@ export async function getElement(selector) {
 
 export async function typeInput(element, value) {
   return await element.fill(value);
+}
+
+export async function sleep() {
+  const page = await newPageIfNeeded();
+  await page.pause(1000);
 }
