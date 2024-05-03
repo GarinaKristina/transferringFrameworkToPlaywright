@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { newPageIfNeeded } from "./actions";
 
 export async function expectPageHaveUrl() {
