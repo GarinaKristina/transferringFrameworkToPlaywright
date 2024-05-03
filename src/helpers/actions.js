@@ -4,6 +4,7 @@ const { webkit } = require("playwright");
 const url = defineConfig.use.baseURL;
 let currentPage;
 
+//work with pages
 export async function newPage() {
   const browser = await webkit.launch();
   const context = await browser.newContext();
@@ -25,34 +26,36 @@ export async function openHomePage() {
   await page.goto(url);
 }
 
+//get elements
 export async function getElement(selector) {
   const page = await newPageIfNeeded();
   const locator = page.locator(selector);
   return locator;
 }
 
-// export async function getBySel(page, selector, ...args) {
-//   return page.locator(`[data-test=${selector}]`, ...args);
-// }
+export async function getBySel(selector) {
+  const page = await newPageIfNeeded();
+  const locator = page.locator(`[data-test=${selector}]`);
+  return locator;
+}
 
-// export async function getBySelLike(page, selector, ...args) {
-//   return page.locator(`[data-test*=${selector}]`, ...args);
-// }
-
+//work with input
 export async function typeInput(element, value) {
   return await element.fill(value);
 }
 
-export async function sleep() {
-  const page = await newPageIfNeeded();
-  await page.pause(1000);
-}
-
+// click
 export async function clickElement(selector) {
   await (await getElement(selector)).click();
 }
 
 export async function clickBySel(button) {
-  const locator = `[data-test=${button}]`; //$('[data-test="bankaccount-new"]')
+  const locator = `[data-test=${button}]`;
   return clickElement(locator);
+}
+
+//others
+export async function sleep() {
+  const page = await newPageIfNeeded();
+  await page.pause(1000);
 }
