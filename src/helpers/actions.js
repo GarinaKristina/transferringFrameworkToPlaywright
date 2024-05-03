@@ -1,5 +1,5 @@
 import defineConfig from "./../../playwright.config.js";
-
+import { test, expect } from "@playwright/test";
 const { webkit } = require("playwright");
 
 const url = defineConfig.use.baseURL;
@@ -31,6 +31,7 @@ export async function getElement(selector) {
   const locator = page.locator(selector);
   return locator;
 }
+
 // export async function getBySel(page, selector, ...args) {
 //   return page.locator(`[data-test=${selector}]`, ...args);
 // }
@@ -46,4 +47,13 @@ export async function typeInput(element, value) {
 export async function sleep() {
   const page = await newPageIfNeeded();
   await page.pause(1000);
+}
+
+export async function clickElement(selector) {
+  await (await getElement(selector)).click();
+}
+
+export async function clickBySel(button) {
+  const locator = `[data-test=${button}]`; //$('[data-test="bankaccount-new"]')
+  return clickElement(locator);
 }
