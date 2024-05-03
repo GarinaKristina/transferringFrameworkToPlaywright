@@ -1,7 +1,6 @@
 import { test, expect } from "@playwright/test";
-import { openHomePage, clickBySel, sleep } from "../helpers/actions";
+import { openHomePage, clickBySel, newPageIfNeeded } from "../helpers/actions";
 import { pages } from "./../pageobjects/index.js";
-import Page from "@playwright/test";
 
 test.describe("Bank Accounts", () => {
   test("creates a new bank account", async () => {
@@ -10,10 +9,9 @@ test.describe("Bank Accounts", () => {
 
     await clickBySel(pages.HomePage.bankAccounts);
     await clickBySel(pages.HomePage.createButton);
-    await sleep();
-    // const currentUrl = page.url();
-    // console.log("----", currentUrl);
-    // await sleep();
-    // await expect(page).toHaveURL(currentUrl);
+
+    const page = await newPageIfNeeded();
+    const currentUrl = page.url();
+    await expect(page).toHaveURL(currentUrl);
   });
 });

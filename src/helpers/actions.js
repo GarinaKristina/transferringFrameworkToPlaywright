@@ -1,5 +1,4 @@
 import defineConfig from "./../../playwright.config.js";
-import { test, expect } from "@playwright/test";
 const { webkit } = require("playwright");
 
 const url = defineConfig.use.baseURL;
@@ -12,7 +11,7 @@ export async function newPage() {
   return page;
 }
 
-async function newPageIfNeeded() {
+export async function newPageIfNeeded() {
   if (!currentPage) {
     const browser = await webkit.launch();
     const context = await browser.newContext();
