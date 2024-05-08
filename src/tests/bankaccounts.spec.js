@@ -1,7 +1,10 @@
 import { test } from "@playwright/test";
+
 import { openHomePage, clickBySel } from "../helpers/actions";
-import { expectPageHaveUrl } from "../helpers/expectations";
+import { expectPageHaveUrl, elementContain } from "../helpers/expectations";
+
 import { page } from "./../pageobjects/index";
+import { bankName } from "./../data/constants";
 
 test.describe("Bank Accounts", () => {
   test("creates a new bank account", async () => {
@@ -13,5 +16,6 @@ test.describe("Bank Accounts", () => {
 
     await expectPageHaveUrl();
     await page.CreateBankAccountPage.createNewAccount();
+    await elementContain(page.HomePage.bankAccountsField, bankName);
   });
 });
