@@ -21,9 +21,9 @@ export async function newPageIfNeeded() {
   return currentPage;
 }
 
-export async function openHomePage() {
+export async function openPage(path = "") {
   const page = await newPageIfNeeded();
-  await page.goto(url);
+  await page.goto(`${url}${path}`);
 }
 
 //get elements
