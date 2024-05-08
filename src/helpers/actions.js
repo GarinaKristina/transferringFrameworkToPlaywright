@@ -59,3 +59,10 @@ export async function sleep() {
   const page = await newPageIfNeeded();
   await page.pause(1000);
 }
+
+export async function clearBlurInput(selector, text) {
+  const element = await getElement(selector);
+  await typeInput(element, text);
+  await element.clear();
+  await element.blur();
+}
