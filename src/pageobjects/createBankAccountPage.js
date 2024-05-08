@@ -5,6 +5,7 @@ export default class CreateBankAccountPage {
   routingNumberInput = "#bankaccount-routingNumber-input";
   accountNumberInput = "#bankaccount-accountNumber-input";
   saveButton = "button[type='submit']";
+  warningText = "#bankaccount-bankName-input-helper-text";
 
   async createNewAccount() {
     const bankNameInputElement = await getElement(this.bankNameInput);

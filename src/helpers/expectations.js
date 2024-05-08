@@ -27,3 +27,9 @@ export async function elementContain(selector, text) {
     throw new Error(`Text '${text}' not found in any element with selector '${selector}'.`);
   }
 }
+
+export async function expectToBeVisibleAndTextContain(selector, text) {
+  const element = await getElement(selector);
+  await expect(element).toBeVisible();
+  await expect(element).toContainText(text);
+}

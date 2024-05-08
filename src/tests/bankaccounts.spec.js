@@ -1,7 +1,7 @@
 import { test } from "@playwright/test";
 
-import { openPage, clickBySel, typeInput, clearBlurInput } from "../helpers/actions";
-import { expectPageHaveUrl, elementContain } from "../helpers/expectations";
+import { openPage, clickBySel, typeInput, clearBlurInput, blurInput } from "../helpers/actions";
+import { expectPageHaveUrl, elementContain, expectToBeVisibleAndTextContain } from "../helpers/expectations";
 
 import { page } from "./../pageobjects/index";
 import { bankName } from "./../data/constants";
@@ -25,6 +25,11 @@ test.describe("Bank Accounts", () => {
 
     await clickBySel(page.HomePage.bankAccounts);
     await clickBySel(page.HomePage.createButton);
+
     await clearBlurInput(page.CreateBankAccountPage.bankNameInput, "The");
+    await expectToBeVisibleAndTextContain(page.CreateBankAccountPage.warningText, "Enter a bank name");
+
+    await blurInput(page.CreateBankAccountPage.bankNameInput, "The");
+    await expectToBeVisibleAndTextContain(page.CreateBankAccountPage.warningText, "Must contain at least 5 characters");
   });
 });

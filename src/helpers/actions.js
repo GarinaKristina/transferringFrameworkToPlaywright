@@ -66,3 +66,9 @@ export async function clearBlurInput(selector, text) {
   await element.clear();
   await element.blur();
 }
+
+export async function blurInput(selector, text) {
+  const element = await getElement(selector);
+  await typeInput(element, text);
+  await element.blur();
+}
