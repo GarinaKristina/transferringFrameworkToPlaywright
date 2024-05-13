@@ -60,9 +60,15 @@ export async function sleep() {
   await page.pause(1000);
 }
 
-export async function clearBlurInput(selector, text) {
+export async function clearBlurTypeInput(selector, text) {
   const element = await getElement(selector);
   await typeInput(element, text);
+  await element.clear();
+  await element.blur();
+}
+
+export async function clearBlurInput(selector) {
+  const element = await getElement(selector);
   await element.clear();
   await element.blur();
 }
@@ -70,5 +76,11 @@ export async function clearBlurInput(selector, text) {
 export async function blurInput(selector, text) {
   const element = await getElement(selector);
   await typeInput(element, text);
+  await element.blur();
+}
+
+export async function focusBlurInput(selector) {
+  const element = await getElement(selector);
+  await element.focus();
   await element.blur();
 }

@@ -33,3 +33,8 @@ export async function expectToBeVisibleAndTextContain(selector, text) {
   await expect(element).toBeVisible();
   await expect(element).toContainText(text);
 }
+
+export async function expectNoteVisible(selector) {
+  const element = await getElement(selector);
+  await expect(element).not.toBeVisible();
+}
