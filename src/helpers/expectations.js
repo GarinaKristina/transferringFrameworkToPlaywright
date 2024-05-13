@@ -38,3 +38,8 @@ export async function expectNoteVisible(selector) {
   const element = await getElement(selector);
   await expect(element).not.toBeVisible();
 }
+
+export async function expectToBeDisabled(selector) {
+  const element = await getElement(selector);
+  await expect(element).toBeDisabled();
+}

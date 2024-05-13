@@ -11,7 +11,7 @@ import {
   sleep,
   clearInput,
 } from "../helpers/actions";
-import { expectPageHaveUrl, elementContain, expectToBeVisibleAndTextContain, expectNoteVisible } from "../helpers/expectations";
+import { expectPageHaveUrl, elementContain, expectToBeVisibleAndTextContain, expectNoteVisible, expectToBeDisabled } from "../helpers/expectations";
 
 import { page } from "./../pageobjects/index";
 import { bankName } from "./../data/constants";
@@ -70,5 +70,15 @@ test.describe("Bank Accounts", () => {
     await blurInput(page.CreateBankAccountPage.accountNumberInput, "123456789111");
     await expectNoteVisible(page.CreateBankAccountPage.warningAccountText);
     await clearInput(page.CreateBankAccountPage.accountNumberInput);
+
+    await blurInput(page.CreateBankAccountPage.accountNumberInput, "1234567891111");
+    await expectToBeVisibleAndTextContain(page.CreateBankAccountPage.warningAccountText, "Must contain no more than 12 digits");
+    await expectToBeDisabled(page.CreateBankAccountPage.saveButton);
+  });
+
+  test("soft deletes a bank account", async () => {
+    await openPage("/bankaccounts");
+    await clickElement(page.HomePage.deleteButton);
+    await elementContain();
   });
 });
